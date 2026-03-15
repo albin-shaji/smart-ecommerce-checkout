@@ -1,85 +1,112 @@
-# ?? Smart E-Commerce Checkout Workflow
+# 🛒 Smart E-Commerce Checkout Workflow
 
-A backend microservices system that simulates a real-world e-commerce checkout pipeline - similar to how Amazon or Flipkart handles cart, discount, payment, and inventory behind the scenes.
+> A backend microservices system simulating a real-world e-commerce checkout pipeline — built without any UI, demonstrated entirely through API calls.
+
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Flask](https://img.shields.io/badge/Flask-REST%20API-lightgrey?logo=flask)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-orange?logo=mysql)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3-red?logo=rabbitmq)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+---
+
+## 📌 Overview
+
+This project connects multiple independent microservices into a complete e-commerce checkout flow — similar to how **Amazon** or **Flipkart** handles cart, discount, payment, and inventory behind the scenes.
 
 Built as part of the **Cloud Computing** subject assignment for **MCA**.
 
----
-
-## ?? Overview
-
-This system connects multiple independent microservices into a complete checkout flow - without any UI. Everything is demonstrated using API calls via Postman.
-
-**Checkout Flow:**
+### Checkout Flow
 ```
-Cart  Discount  Payment  Inventory Update  RabbitMQ Event
+Cart Service → Discount Service → Payment Service → Inventory Update → RabbitMQ Event
 ```
 
 ---
 
-## ?? Architecture
+## 🧱 System Architecture
 ```
-CLIENT (Postman)
-     |
-     CDD Port 5001  Inventory Service (Flask)
-     CDD Port 5002  Cart Service (Flask)
-     CDD Port 5003  Discount Service (Flask)
-     @DD Port 5004  Payment Service (Flask)
-                          |
-               ZDDDDDDDDDDADDDDDDDDDD?
-          MySQL (3306)        RabbitMQ (5672)
-```
-
----
-
-## ?? Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| Python + Flask | Microservice REST APIs |
-| MySQL 8.0 | Persistent database |
-| RabbitMQ 3 | Async message broker |
-| Docker | Containerization |
-| Postman | API testing & demo |
-
----
-
-## ?? Project Structure
-```
-ecommerce/
-CDD db-init/
-3   @DD init.sql
-CDD inventory-service/
-3   CDD app.py
-3   CDD requirements.txt
-3   @DD Dockerfile
-CDD cart-service/
-3   CDD app.py
-3   CDD requirements.txt
-3   @DD Dockerfile
-CDD discount-service/
-3   CDD app.py
-3   CDD requirements.txt
-3   @DD Dockerfile
-CDD payment-service/
-3   CDD app.py
-3   CDD requirements.txt
-3   @DD Dockerfile
-CDD README.md
-@DD LICENSE
+                        CLIENT (Postman)
+                              |
+          ┌───────────────────┼───────────────────┐
+          │                   │                   │
+    Port 5001           Port 5002           Port 5003
+          │                   │                   │
+  ┌───────┴──────┐    ┌───────┴──────┐    ┌───────┴──────┐
+  │  Inventory   │    │     Cart     │    │   Discount   │
+  │   Service    │    │   Service    │    │   Service    │
+  └──────────────┘    └──────────────┘    └──────────────┘
+                                                 
+                            Port 5004
+                      ┌───────┴──────┐
+                      │   Payment    │
+                      │   Service    │
+                      └──────┬───────┘
+                             │
+               ┌─────────────┴─────────────┐
+               │                           │
+        ┌──────┴──────┐           ┌────────┴───────┐
+        │    MySQL    │           │   RabbitMQ     │
+        │  Port 3306  │           │  Port 5672     │
+        └─────────────┘           └────────────────┘
 ```
 
 ---
 
-## ?? Getting Started
+## ⚙️ Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Python + Flask | 3.11 | Microservice REST APIs |
+| MySQL | 8.0 | Persistent database storage |
+| RabbitMQ | 3 | Asynchronous event messaging |
+| Docker | Latest | Service containerization |
+| Postman | Latest | API testing & demonstration |
+
+---
+
+## 📁 Project Structure
+```
+smart-ecommerce-checkout/
+├── 📂 db-init/
+│   └── init.sql                  ← Database schema + seed data
+│
+├── 📂 inventory-service/
+│   ├── app.py                    ← CRUD APIs for products & stock
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── 📂 cart-service/
+│   ├── app.py                    ← Add items, view cart
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── 📂 discount-service/
+│   ├── app.py                    ← Serverless-style coupon logic
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── 📂 payment-service/
+│   ├── app.py                    ← Payment + RabbitMQ publisher
+│   ├── requirements.txt          ← Includes pika + requests
+│   └── Dockerfile
+│
+├── 📄 README.md
+└── 📄 LICENSE
+```
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Docker Desktop installed and running
-- Postman
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- [Postman](https://www.postman.com/downloads/) for API testing
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/smart-ecommerce-checkout.git
+git clone https://github.com/albin-shaji/smart-ecommerce-checkout.git
 cd smart-ecommerce-checkout
 ```
 
@@ -90,13 +117,13 @@ docker network create ecommerce-net
 
 ### 3. Start Infrastructure
 ```bash
-# MySQL
+# Start MySQL
 docker run -d --name mysql-db --network ecommerce-net \
   -e MYSQL_ROOT_PASSWORD=root123 \
   -e MYSQL_DATABASE=ecommerce \
   -p 3306:3306 mysql:8.0
 
-# RabbitMQ
+# Start RabbitMQ
 docker run -d --name rabbitmq --network ecommerce-net \
   -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
@@ -125,75 +152,111 @@ docker build -t payment-service ./payment-service
 docker run -d --name payment --network ecommerce-net -p 5004:5004 payment-service
 ```
 
-### 6. Verify All Containers Running
+### 6. Verify Everything is Running
 ```bash
 docker ps
 ```
 
+You should see **6 containers** running:
+
+| Container | Port | Status |
+|-----------|------|--------|
+| mysql-db | 3306 | ✅ Up |
+| rabbitmq | 5672, 15672 | ✅ Up |
+| inventory | 5001 | ✅ Up |
+| cart | 5002 | ✅ Up |
+| discount | 5003 | ✅ Up |
+| payment | 5004 | ✅ Up |
+
 ---
 
-## ?? Testing the Checkout Flow (Postman)
+## 🧪 Testing the Checkout Flow
 
-### Step 1 - Add to Cart
-```
+### Step 1 — Add Item to Cart
+```http
 POST http://localhost:5002/cart
-Body: { "product_id": 1, "quantity": 2 }
+Content-Type: application/json
+
+{
+    "product_id": 1,
+    "quantity": 2
+}
 ```
 
-### Step 2 - Apply Discount
-```
+### Step 2 — Apply Discount Code
+```http
 POST http://localhost:5003/discount
-Body: { "code": "NEWYEAR", "original_price": 100000 }
+Content-Type: application/json
+
+{
+    "code": "NEWYEAR",
+    "original_price": 100000
+}
 ```
 
-### Step 3 - Process Payment
-```
+### Step 3 — Process Payment
+```http
 POST http://localhost:5004/payment
-Body: { "product_id": 1, "quantity": 2, "discount_code": "NEWYEAR" }
+Content-Type: application/json
+
+{
+    "product_id": 1,
+    "quantity": 2,
+    "discount_code": "NEWYEAR"
+}
 ```
 
-### Step 4 - Verify Inventory Updated
-```
+### Step 4 — Verify Inventory Updated
+```http
 GET http://localhost:5001/inventory/1
 ```
 
-### Step 5 - Check RabbitMQ
-```
-Open http://localhost:15672 (guest/guest)  Queues  payment_processed
-```
+### Step 5 — Verify RabbitMQ Event
+
+Open [http://localhost:15672](http://localhost:15672) → Login: `guest / guest` → **Queues** tab → `payment_processed`
 
 ---
 
-## ??? Discount Codes
+## 🎟️ Available Discount Codes
 
-| Code | Discount |
-|------|----------|
-| NEWYEAR | 10% off |
-| SAVE20 | 20% off |
-| FLAT50 | 50% off |
-
----
-
-## ??? Service Ports
-
-| Service | Port |
-|---------|------|
-| Inventory Service | 5001 |
-| Cart Service | 5002 |
-| Discount Service | 5003 |
-| Payment Service | 5004 |
-| MySQL | 3306 |
-| RabbitMQ | 5672 / 15672 |
+| Code | Discount | Description |
+|------|----------|-------------|
+| `NEWYEAR` | 10% off | New Year offer |
+| `SAVE20` | 20% off | Save more offer |
+| `FLAT50` | 50% off | Flat half price |
 
 ---
 
-## ?? License
+## 🗄️ Database Tables
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+| Table | Purpose |
+|-------|---------|
+| `inventory` | Stores product name, price, quantity |
+| `cart` | Stores items added to cart |
+| `payments` | Stores all transaction records |
 
 ---
 
-## ????? Author
+## 🌐 Service Endpoints
 
-**Albin Shaji**
-MCA Student | Palakkad, Kerala
+| Service | Base URL |
+|---------|----------|
+| Inventory | http://localhost:5001 |
+| Cart | http://localhost:5002 |
+| Discount | http://localhost:5003 |
+| Payment | http://localhost:5004 |
+| RabbitMQ Dashboard | http://localhost:15672 |
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Albin Shaji**  
+MCA Student | Palakkad, Kerala  
+[GitHub](https://github.com/albin-shaji)
