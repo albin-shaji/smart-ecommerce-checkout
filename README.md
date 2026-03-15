@@ -86,6 +86,7 @@ smart-ecommerce-checkout/
 │   ├── app.py                    ← Payment + RabbitMQ publisher
 │   ├── requirements.txt
 │   └── Dockerfile
+├── 📂 screenshots/               ← Demo screenshots
 ├── 📄 README.md
 └── 📄 LICENSE
 ```
@@ -213,6 +214,34 @@ Open http://localhost:15672 → Login: guest / guest → Queues tab → payment_
 | Discount | http://localhost:5003 |
 | Payment | http://localhost:5004 |
 | RabbitMQ Dashboard | http://localhost:15672 |
+
+---
+
+## 📸 Screenshots
+
+### 1. All Containers Running — Terminal
+![Docker PS](screenshots/1.%20docker%20ps.png)
+
+### 2. All Containers Running — Docker Desktop
+![Docker GUI](screenshots/2.%20docker%20GUI.png)
+
+### 3. Inventory List
+![Inventory](screenshots/3.%20inventory.png)
+
+### 4. Add Item to Cart
+![Add to Cart](screenshots/4.%20add%20item%20to%20cart.png)
+
+### 5. Apply Discount Code
+![Apply Discount](screenshots/5.%20apply%20discount.png)
+
+### 6. Process Payment
+![Process Payment](screenshots/6.%20process%20payment.png)
+
+### 7. Inventory Updated After Purchase
+![Inventory Updated](screenshots/7.%20inventory%20update%20after%20purchase.png)
+
+### 8. RabbitMQ Queue
+![RabbitMQ](screenshots/8.%20RabbitMQ%20Queue.png)
 
 ---
 
